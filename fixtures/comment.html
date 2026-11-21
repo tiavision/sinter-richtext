@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@tiaforge-ui/sinter-richtext: a comment form</title>
+</head>
+<body>
+  <!-- A comment: a required field with a length limit, its own toolbar, and the preview with the comment policy -->
+  <form id="comment" data-sn-state="{ body: '', sent: '' }" data-sn-on-submit="$event.preventDefault(); sent = body; body = ''">
+    <rt-editor data-sn-model="body" data-sn-with="{ label: 'Comment', required: true, rows: 4, maxlength: 2000 }">
+      <span slot="toolbar">
+        <button type="button" data-rt-command="bold" aria-label="Bold">B</button>
+        <button type="button" data-rt-command="link" aria-label="Link">Link</button>
+      </span>
+      <md-doc slot="preview" data-sn-with="{ doc: md.parse(body, { headings: 'strong', images: 'link', html: 'text' }) }"></md-doc>
+    </rt-editor>
+    <button id="send">Send</button>
+    <pre id="sent" data-sn-text="sent"></pre>
+  </form>
+</body>
+</html>

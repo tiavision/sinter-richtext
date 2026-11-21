@@ -1,0 +1,120 @@
+<!--
+  A markdown editor: the source in a <textarea>, a toolbar and keys that edit it, and a preview the app
+  fills with its own display (sinter-markdown's <md-doc>, with the app's fills), so the preview is the
+  page the text will be. The source is the value: what an app stores is what was typed.
+
+  <rt-editor data-sn-model="draft" data-sn-with="{ label: 'Comment' }">
+    <md-doc slot="preview" data-sn-with="{ doc: md.parse(draft) }"></md-doc>
+  </rt-editor>
+
+  - value / change: data-sn-model binds the source (a `change` per edit: typing, a button, a key).
+  - label: the textarea's and the tabs' accessible name.
+  - layout: 'tabs' (default), Write and Preview in one place; 'split', side by side (stacked when narrow).
+  - placeholder, rows, required, disabled, maxlength: the textarea's (required and maxlength are checked
+    when its form is submitted). A sinter form posts state (data-sn-body), so the field has no name.
+  - slot preview: what the Preview shows; rendered only while it is shown.
+  - slot toolbar: replaces the buttons; any element with `data-rt-command="bold"` (a CommandName) runs
+    that command, so an app's own buttons keep the keys and the undo.
+-->
+<template data-sn-props="{ value: string; label: string; layout?: 'tabs' | 'split'; placeholder?: string; rows?: number; required?: boolean; disabled?: boolean; maxlength?: number }" data-sn-emits="{ change: string }">
+  <div class="rt" data-sn-state="{ tab: 'write' }" data-sn-class="{ split: layout === 'split' }">
+    <div class="bar">
+      <template data-sn-if="layout !== 'split'">
+        <div class="tabs" role="tablist" data-sn-attr="{ 'aria-label': label }">
+          <button type="button" role="tab" data-sn-attr="{ 'aria-selected': tab === 'write' ? 'true' : 'false' }" data-sn-on-click="tab = 'write'">Write</button>
+          <button type="button" role="tab" data-sn-attr="{ 'aria-selected': tab === 'preview' ? 'true' : 'false' }" data-sn-on-click="tab = 'preview'">Preview</button>
+        </div>
+      </template>
+      <div class="tools" role="toolbar" aria-label="Formatting" data-sn-ref="toolbar" data-sn-show="layout === 'split' || tab === 'write'">
+        <slot name="toolbar">
+          <span class="group">
+            <button type="button" data-rt-command="heading" aria-label="Heading" title="Heading">H</button>
+            <button type="button" data-rt-command="bold" aria-label="Bold" title="Bold (Ctrl+B)" class="b">B</button>
+            <button type="button" data-rt-command="italic" aria-label="Italic" title="Italic (Ctrl+I)" class="i">I</button>
+            <button type="button" data-rt-command="strikethrough" aria-label="Strikethrough" title="Strikethrough" class="s">S</button>
+          </span>
+          <span class="group">
+            <button type="button" data-rt-command="quote" aria-label="Quote" title="Quote">“</button>
+            <button type="button" data-rt-command="code" aria-label="Code" title="Code (Ctrl+E)" class="mono">&lt;/&gt;</button>
+            <button type="button" data-rt-command="link" aria-label="Link" title="Link (Ctrl+K)">Link</button>
+          </span>
+          <span class="group">
+            <button type="button" data-rt-command="bulletList" aria-label="Bulleted list" title="Bulleted list">•</button>
+            <button type="button" data-rt-command="orderedList" aria-label="Numbered list" title="Numbered list" class="mono">1.</button>
+            <button type="button" data-rt-command="taskList" aria-label="Task list" title="Task list">☐</button>
+          </span>
+        </slot>
+      </div>
+    </div>
+    <div class="panes">
+      <textarea data-sn-ref="input" spellcheck="true" data-sn-show="layout === 'split' || tab === 'write'" data-sn-attr="{ value, placeholder, rows: rows ?? 8, required, disabled, maxlength, 'aria-label': label }" data-sn-on-input="emit('change', $el.value)"></textarea>
+      <template data-sn-if="layout === 'split' || tab === 'preview'">
+        <div class="preview" aria-live="off"><slot name="preview"><p class="empty">Nothing to preview.</p></slot></div>
+      </template>
+    </div>
+  </div>
+</template>
+<style>
+  .rt {
+    --rt-line: color-mix(in srgb, currentColor 22%, transparent);
+    --rt-soft: color-mix(in srgb, currentColor 6%, transparent);
+    border: 1px solid var(--rt-line);
+    border-radius: 6px;
+    min-width: 0;
+  }
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 12px;
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--rt-line);
+    background: var(--rt-soft);
+    border-radius: 6px 6px 0 0;
+  }
+  .tabs, .tools, .group { display: flex; flex-wrap: wrap; gap: 2px; }
+  .tools { gap: 2px 10px; }
+  .tools[hidden] { display: none; }
+  button {
+    font: inherit;
+    font-size: 0.875em;
+    color: inherit;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 2px 8px;
+    min-width: 2em;
+    min-height: 2em;
+    cursor: pointer;
+  }
+  button:hover { background: var(--rt-soft); border-color: var(--rt-line); }
+  button:focus-visible { outline: 2px solid Highlight; outline-offset: 1px; }
+  [role='tab'][aria-selected='true'] { border-color: var(--rt-line); background: Canvas; font-weight: 600; }
+  .b { font-weight: 700; }
+  .i { font-style: italic; }
+  .s { text-decoration: line-through; }
+  .mono { font-family: ui-monospace, monospace; }
+  .panes { display: grid; }
+  .split .panes { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 8em;
+    resize: vertical;
+    border: 0;
+    padding: 10px 12px;
+    font: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: inherit;
+    background: transparent;
+    tab-size: 4;
+  }
+  textarea:focus { outline: none; }
+  .rt:focus-within { border-color: color-mix(in srgb, Highlight 70%, transparent); }
+  .preview { padding: 10px 12px; min-width: 0; overflow-wrap: anywhere; }
+  .split .preview { border-left: 1px solid var(--rt-line); }
+  .empty { opacity: 0.6; margin: 0; }
+</style>

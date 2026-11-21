@@ -1,0 +1,7 @@
+node_modules/
+dist/
+# written by `sinter check` (the components' base classes); each app writes its own
+sinter/sinter.components.d.ts
+# sinter check's working files, and the app-side declarations it writes for the vite config's pages
+.sinter/
+src/

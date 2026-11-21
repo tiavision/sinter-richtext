@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@tiaforge-ui/sinter-richtext: a post</title>
+</head>
+<body>
+  <!-- Write and Preview in tabs; the preview is md-doc over the draft, parsed when the tab is shown -->
+  <main data-sn-state="{ draft: '# Fish & chips\n\nA short history of *fish & chips*.\n\n- London\n- Lancashire\n' }">
+    <rt-editor id="post" data-sn-model="draft" data-sn-with="{ label: 'Post' }">
+      <md-doc slot="preview" data-sn-with="{ doc: md.parse(draft) }"></md-doc>
+    </rt-editor>
+    <p><output id="count" data-sn-text="draft.length + ' characters'"></output></p>
+  </main>
+</body>
+</html>

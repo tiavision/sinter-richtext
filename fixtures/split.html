@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@tiaforge-ui/sinter-richtext: side by side</title>
+</head>
+<body>
+  <!-- The source and the preview side by side, the preview live; links in the preview take the app's fill -->
+  <main data-sn-state="{ draft: '' }">
+    <rt-editor id="notes" data-sn-model="draft" data-sn-with="{ label: 'Notes', layout: 'split', placeholder: 'Write in markdown', rows: 12 }">
+      <md-doc slot="preview" data-sn-with="{ doc: md.parse(draft) }"><a slot="link" class="ext" data-sn-attr="{ href: $slot.node.url }"><slot></slot> ↗</a></md-doc>
+    </rt-editor>
+  </main>
+</body>
+</html>

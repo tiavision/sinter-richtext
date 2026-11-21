@@ -1,0 +1,56 @@
+{
+  "name": "@tiaforge-ui/sinter-richtext",
+  "version": "0.1.0",
+  "description": "A markdown editor for sinter: the source in a textarea, a toolbar and keys that edit it, and a preview drawn by sinter-markdown's components.",
+  "license": "MIT",
+  "author": "Tia Heinrich",
+  "keywords": [
+    "sinter",
+    "markdown",
+    "editor",
+    "textarea",
+    "components"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "sinter": "./sinter",
+  "exports": {
+    ".": "./sinter/index.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "sinter",
+    "!sinter/sinter.components.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "check": "sinter check",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@tiaforge-ui/sinter": ">=0.20.0 <1",
+    "@tiaforge-ui/sinter-markdown": ">=0.20.0 <1"
+  },
+  "devDependencies": {
+    "@tiaforge-ui/sinter": "file:../sinter",
+    "@tiaforge-ui/sinter-markdown": "file:../sinter/packages/sinter-markdown",
+    "@types/node": "^26.6.6",
+    "playwright": "1.63.0",
+    "rolldown": "1.2.16",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.1.0"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "@tiaforge-ui/sinter-markdown": {
+      "optional": true
+    }
+  }
+}
